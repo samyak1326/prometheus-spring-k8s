@@ -1,7 +1,7 @@
 package com.example.demo;
 
-import ch.qos.logback.core.joran.conditional.ThenAction;
-import io.prometheus.metrics.model.snapshots.Unit;
+//import ch.qos.logback.core.joran.conditional.ThenAction;
+//import io.prometheus.metrics.model.snapshots.Unit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +26,7 @@ public class WebApp {
     private static final Histogram requestDuration = Histogram.build()
             .name("http_request_duration_ms")
             .help("HTTP requests service time in ms")
-//            .buckets(20,40,60,80,100,120,140,160,180,200)
+            .buckets(20,40,60,80,100,120,140,160,180,200) // create time buckets at an interval of 20ms.
 //            .unit(Unit.SECONDS+"")
             .labelNames("method", "path", "status_code")
             .register();
@@ -71,22 +71,19 @@ public class WebApp {
         String keyValue = requestBody.has("key") ? requestBody.get("key").asText() : "Key not found";
         System.out.println("POST request received with body: " + keyValue);
 
-        long start = System.currentTimeMillis();
 
+        long start = System.nanoTime();
         try {
 
             int delayValue = Integer.parseInt(keyValue);
             Thread.sleep(delayValue);
-            long end = System.currentTimeMillis();
-            long delay = end - start;
-            double x = Unit.nanosToSeconds(System.nanoTime() - start);
-            System.out.println("response time------>"+x);
-            requestDuration.labels("POST", "/PostEndpoint", "200")
-                    .observe( x );
+            long durationInMillis = (System.nanoTime() - start) / 1_000_000; // Convert nanoseconds to milliseconds
+            System.out.println("POST request - delay of " + durationInMillis + " ms");
 
-//            delayTimer.record(delay, TimeUnit.MILLISECONDS);
-            System.out.println("POST request - delay of " + delay + " ms");
-            return ResponseEntity.ok("Delay processed: " + delay + " ms");
+            requestDuration.labels("POST", "/PostEndpoint", "200")
+                    .observe(durationInMillis); // Observe in milliseconds
+            System.out.println("POST request - delay of " + durationInMillis + " ms");
+            return ResponseEntity.ok("Delay processed: " + durationInMillis + " ms");
 
         } catch (NumberFormatException ex) {
             requestDuration.labels("POST", "/PostEndpoint", "400")
