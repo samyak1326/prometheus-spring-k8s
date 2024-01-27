@@ -9,9 +9,12 @@ VOLUME /tmp
 #ARG JAR_FILE=target/myapp-0.0.1-SNAPSHOT.jar
 
 # Copy the jar file into the container
-COPY ./target/demo-0.0.1-SNAPSHOT.jar .
+COPY ./target/demo-0.0.1-SNAPSHOT.jar -v
 
 EXPOSE 8080
+#EXPOSE 9090
+
+
 # Run the jar file
 #ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
 
