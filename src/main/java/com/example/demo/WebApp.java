@@ -1,7 +1,5 @@
 package com.example.demo;
 
-//import ch.qos.logback.core.joran.conditional.ThenAction;
-//import io.prometheus.metrics.model.snapshots.Unit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,7 +25,6 @@ public class WebApp {
             .name("http_request_duration_ms")
             .help("HTTP requests service time in ms")
             .buckets(20,40,60,80,100,120,140,160,180,200) // create time buckets at an interval of 20ms.
-//            .unit(Unit.SECONDS+"")
             .labelNames("method", "path", "status_code")
             .register();
 
@@ -86,12 +83,16 @@ public class WebApp {
             return ResponseEntity.ok("Delay processed: " + durationInMillis + " ms");
 
         } catch (NumberFormatException ex) {
+            long durationInMillis = (System.nanoTime() - start) / 1_000_000; // Convert nanoseconds to milliseconds
             requestDuration.labels("POST", "/PostEndpoint", "400")
-                    .observe((System.nanoTime() - start) / 1_000_000.0);
+                    .observe(durationInMillis);
             return ResponseEntity.badRequest().body("Invalid number format for key: " + keyValue);
+
         } catch (InterruptedException ex) {
+            long durationInMillis = (System.nanoTime() - start) / 1_000_000; // Convert nanoseconds to milliseconds
+
             requestDuration.labels("POST", "/PostEndpoint", "500")
-                    .observe((System.nanoTime() - start) / 1_000_000.0);
+                    .observe(durationInMillis);
             Thread.currentThread().interrupt();
             return ResponseEntity.internalServerError().body("Error during thread sleep: " + ex.getMessage());
         }
