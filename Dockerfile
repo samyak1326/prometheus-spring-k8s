@@ -1,21 +1,19 @@
-# Start with a base image containing Java runtime
-#FROM openjdk:8-jdk-alpine
+# Start with a base image containing Java runtime and Tomcat
+FROM tomcat:9.0-jdk11-openjdk
 
-FROM openjdk:21-jdk
-# Add a volume pointing to /tmp
+# Add a volume pointing to /tmp (optional, if you need to persist data in /tmp)
 VOLUME /tmp
 
-# Add the application's jar file
-#ARG JAR_FILE=target/myapp-0.0.1-SNAPSHOT.jar
+# Remove default Tomcat web applications (optional, to start with a clean Tomcat)
+RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy the jar file into the container
-COPY ./target/demo-0.0.1-SNAPSHOT.jar -v
+# Copy the .war file into the container into the webapps directory
+COPY ./target/demo-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/ROOT.war
 
+# Expose port 8080 for HTTP traffic
 EXPOSE 8080
-#EXPOSE 9090
 
+# The base image's CMD instruction starts Tomcat, so no need to provide a custom ENTRYPOINT or CMD
+CMD ["catalina.sh", "run"]
 
-# Run the jar file
-#ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
-
-ENTRYPOINT ["java" , "-jar", "demo-0.0.1-SNAPSHOT.jar"]
+# docker run -p 9091:9090 -v /E/Server_API/demo/src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus
