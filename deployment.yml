@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deploying-spring-server
+  labels:
+    app: app-spring-server
+spec:
+  replicas: 3  # the number of instances you want to run
+  selector:
+    matchLabels:
+      app: app-spring-server
+  template:
+    metadata:
+      labels:
+        app: app-spring-server
+    spec:
+      containers:
+        - name: container-spring-boot
+          image: samyak1326/prom-test-1:1.0  # replace with your Docker Hub image
+          ports:
+            - containerPort: 8080  # the port your container exposes
