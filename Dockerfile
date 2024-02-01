@@ -8,10 +8,11 @@ FROM tomcat:latest
 #RUN #rm -rf /usr/local/tomcat/webapps/*
 
 # Copy the .war file into the container into the webapps directory
-COPY ./target/dc.war /usr/local/tomcat/webapps/
+COPY ./target/demo-0.0.1-SNAPSHOT.war /usr/local/tomcat/webapps/
 
 # Expose port 8080 for HTTP traffic
 EXPOSE 8080
+
 
 # The base image's CMD instruction starts Tomcat, so no need to provide a custom ENTRYPOINT or CMD
 CMD ["catalina.sh", "run"]

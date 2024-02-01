@@ -16,6 +16,9 @@ spec:
     spec:
       containers:
         - name: container-spring-boot
-          image: samyak1326/tomcat-spring  # replace with your Docker Hub image
+          image: samyak1326/tomcat-spring
+
+          # replace with your Docker Hub image
+
           ports:
             - containerPort: 8080  # the port your container exposes
