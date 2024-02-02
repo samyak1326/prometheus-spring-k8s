@@ -4,6 +4,7 @@ metadata:
   name: deploying-spring-server
   labels:
     app: app-spring-server
+  namespace: prometheus
 spec:
   replicas: 3  # the number of instances you want to run
   selector:
@@ -13,6 +14,10 @@ spec:
     metadata:
       labels:
         app: app-spring-server
+      annotations:
+        prometheus.io/scrape: 'true'
+        prometheus.io/path: '/metrics'
+        prometheus.io/port: '8080'
     spec:
       containers:
         - name: container-spring-boot

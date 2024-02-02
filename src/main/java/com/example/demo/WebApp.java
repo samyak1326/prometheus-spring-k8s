@@ -1,7 +1,6 @@
 package com.example.demo;
 
 import io.prometheus.metrics.exporter.servlet.jakarta.PrometheusMetricsServlet;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.prometheus.client.Counter;
 import io.prometheus.metrics.core.metrics.Histogram;
-import io.prometheus.client.exporter.HTTPServer;
 
-import java.io.IOException;
-import java.time.Duration;
+
 
 @RestController
 public class WebApp {
@@ -67,10 +64,10 @@ public class WebApp {
 //    }
 
     @PostMapping("/PostEndpoint")
-    public ResponseEntity<String> tryDelay(@RequestBody JsonNode requestBody) {
+    public ResponseEntity<String> tryDelay(@RequestBody JsonNode requestBody)
+    {
         String keyValue = requestBody.has("key") ? requestBody.get("key").asText() : "Key not found";
         System.out.println("POST request received with body: " + keyValue);
-
 
         long start = System.nanoTime();
         try {
@@ -100,12 +97,6 @@ public class WebApp {
             return ResponseEntity.internalServerError().body("Error during thread sleep: " + ex.getMessage());
         }
     }
-
-//    @Bean
-//    public ServletRegistrationBean<PrometheusMetricsServlet> createPrometheusMetricsEndpoint() {
-//        return new ServletRegistrationBean<>(new PrometheusMetricsServlet(), "/metrics/*");
-//    }
-
 }
 
 
