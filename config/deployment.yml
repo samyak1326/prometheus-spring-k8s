@@ -16,7 +16,7 @@ spec:
         app: app-spring-server
       annotations:
         prometheus.io/scrape: 'true'
-        prometheus.io/path: '/metrics'
+        prometheus.io/path: '/demo-0.0.1-SNAPSHOT/metrics'
         prometheus.io/port: '8080'
     spec:
       containers:
